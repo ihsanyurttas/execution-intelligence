@@ -1,0 +1,140 @@
+{
+  "source": {
+    "category": "work_tracking",
+    "mode": "scenario",
+    "product": "manual"
+  },
+  "tasks": [
+    {
+      "id": "T-201",
+      "title": "Improve dashboard load time",
+      "status": "in_progress",
+      "priority": "high",
+      "owner": "grace",
+      "team": "team-frontend",
+      "service": "dashboard",
+      "done_criteria": null,
+      "success_metric": null,
+      "age_days": 8,
+      "in_report": true,
+      "labels": ["performance", "frontend"],
+      "history": [
+        {"event": "status_change", "from": "open", "to": "in_progress", "days_ago": 5}
+      ]
+    },
+    {
+      "id": "T-202",
+      "title": "Refactor user profile API",
+      "status": "in_progress",
+      "priority": "medium",
+      "owner": "henry",
+      "team": "team-backend",
+      "service": "user-service",
+      "done_criteria": null,
+      "success_metric": null,
+      "age_days": 11,
+      "in_report": true,
+      "labels": ["backend", "refactor"],
+      "history": [
+        {"event": "status_change", "from": "open", "to": "in_progress", "days_ago": 9}
+      ]
+    },
+    {
+      "id": "T-203",
+      "title": "Add multi-factor authentication",
+      "status": "open",
+      "priority": "critical",
+      "owner": "iris",
+      "team": "team-security",
+      "service": "auth",
+      "done_criteria": null,
+      "success_metric": null,
+      "age_days": 5,
+      "in_report": true,
+      "labels": ["security", "critical"],
+      "history": []
+    },
+    {
+      "id": "T-204",
+      "title": "Migrate search index to v3",
+      "status": "in_progress",
+      "priority": "high",
+      "owner": "jack",
+      "team": "team-data",
+      "service": "search",
+      "done_criteria": "Index returns results in < 50ms for 95th percentile",
+      "success_metric": null,
+      "age_days": 14,
+      "in_report": true,
+      "labels": ["data", "migration"],
+      "history": [
+        {"event": "status_change", "from": "open", "to": "in_progress", "days_ago": 10}
+      ]
+    },
+    {
+      "id": "T-205",
+      "title": "Set up CI/CD pipeline for new service",
+      "status": "open",
+      "priority": "medium",
+      "owner": "kate",
+      "team": "team-platform",
+      "service": "ci-platform",
+      "done_criteria": null,
+      "success_metric": null,
+      "age_days": 3,
+      "in_report": true,
+      "labels": ["devops"],
+      "history": []
+    },
+    {
+      "id": "T-206",
+      "title": "Document API authentication flow",
+      "status": "done",
+      "priority": "low",
+      "owner": "leo",
+      "team": "team-docs",
+      "service": "auth",
+      "done_criteria": "Docs published to internal wiki",
+      "success_metric": null,
+      "age_days": 20,
+      "in_report": true,
+      "labels": ["docs"],
+      "history": [
+        {"event": "status_change", "from": "in_progress", "to": "done", "days_ago": 2}
+      ]
+    }
+  ],
+  "pull_requests": [],
+  "services": [
+    {
+      "id": "dashboard",
+      "name": "Dashboard Service",
+      "owner_team": "team-frontend",
+      "criticality": "p1"
+    },
+    {
+      "id": "user-service",
+      "name": "User Profile Service",
+      "owner_team": "team-backend",
+      "criticality": "p1"
+    },
+    {
+      "id": "auth",
+      "name": "Auth Service",
+      "owner_team": "team-security",
+      "criticality": "p0"
+    },
+    {
+      "id": "search",
+      "name": "Search Service",
+      "owner_team": "team-data",
+      "criticality": "p1"
+    },
+    {
+      "id": "ci-platform",
+      "name": "CI/CD Platform",
+      "owner_team": "team-platform",
+      "criticality": "p2"
+    }
+  ]
+}

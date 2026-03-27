@@ -1,0 +1,124 @@
+{
+  "source": {
+    "category": "work_tracking",
+    "mode": "scenario",
+    "product": "manual"
+  },
+  "tasks": [
+    {
+      "id": "T-101",
+      "title": "Migrate payment service to v2 API",
+      "status": "in_progress",
+      "priority": "high",
+      "owner": null,
+      "team": null,
+      "service": "payments",
+      "done_criteria": "All endpoints return 200 on staging",
+      "success_metric": "p99 latency < 200ms",
+      "age_days": 12,
+      "in_report": true,
+      "labels": ["backend", "migration"],
+      "history": [
+        {"event": "owner_change", "from": "alice", "to": null, "days_ago": 8},
+        {"event": "team_transfer", "from": "team-backend", "to": null, "days_ago": 5}
+      ]
+    },
+    {
+      "id": "T-102",
+      "title": "Resolve auth token expiry bug",
+      "status": "open",
+      "priority": "critical",
+      "owner": null,
+      "team": null,
+      "service": "auth",
+      "done_criteria": null,
+      "success_metric": null,
+      "age_days": 7,
+      "in_report": true,
+      "labels": ["security", "bug"],
+      "history": [
+        {"event": "owner_change", "from": "bob", "to": "carol", "days_ago": 6},
+        {"event": "owner_change", "from": "carol", "to": null, "days_ago": 4}
+      ]
+    },
+    {
+      "id": "T-103",
+      "title": "Add rate limiting to public API",
+      "status": "open",
+      "priority": "medium",
+      "owner": null,
+      "team": null,
+      "service": "api-gateway",
+      "done_criteria": "Rate limiting returns 429 after threshold",
+      "success_metric": null,
+      "age_days": 9,
+      "in_report": true,
+      "labels": ["backend"],
+      "history": []
+    },
+    {
+      "id": "T-104",
+      "title": "Upgrade logging library",
+      "status": "open",
+      "priority": "low",
+      "owner": null,
+      "team": null,
+      "service": null,
+      "done_criteria": null,
+      "success_metric": null,
+      "age_days": 15,
+      "in_report": true,
+      "labels": ["maintenance"],
+      "history": []
+    }
+  ],
+  "pull_requests": [
+    {
+      "id": "PR-201",
+      "title": "Add v2 payment client",
+      "author": "dave",
+      "reviewers": [],
+      "status": "open",
+      "linked_task_id": "T-101",
+      "age_days": 5
+    },
+    {
+      "id": "PR-202",
+      "title": "Fix token refresh logic",
+      "author": "eve",
+      "reviewers": [],
+      "status": "open",
+      "linked_task_id": "T-102",
+      "age_days": 3
+    },
+    {
+      "id": "PR-203",
+      "title": "Update README with API docs",
+      "author": "frank",
+      "reviewers": ["alice"],
+      "status": "open",
+      "linked_task_id": null,
+      "age_days": 1
+    }
+  ],
+  "services": [
+    {
+      "id": "payments",
+      "name": "Payment Service",
+      "owner_team": null,
+      "criticality": "p0"
+    },
+    {
+      "id": "auth",
+      "name": "Auth Service",
+      "owner_team": null,
+      "criticality": "p0"
+    },
+    {
+      "id": "api-gateway",
+      "name": "API Gateway",
+      "owner_team": "platform-team",
+      "criticality": "p1"
+    }
+  ]
+}

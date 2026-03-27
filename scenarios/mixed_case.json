@@ -1,0 +1,160 @@
+{
+  "source": {
+    "category": "work_tracking",
+    "mode": "scenario",
+    "product": "manual"
+  },
+  "tasks": [
+    {
+      "id": "T-301",
+      "title": "Onboard enterprise customer integrations",
+      "status": "in_progress",
+      "priority": null,
+      "owner": null,
+      "team": null,
+      "service": "integrations",
+      "done_criteria": null,
+      "success_metric": null,
+      "age_days": 18,
+      "in_report": false,
+      "labels": ["customer-facing"],
+      "history": [
+        {"event": "owner_change", "from": "mike", "to": "nina", "days_ago": 14},
+        {"event": "owner_change", "from": "nina", "to": null, "days_ago": 9},
+        {"event": "status_change", "from": "open", "to": "in_progress", "days_ago": 16},
+        {"event": "status_change", "from": "in_progress", "to": "blocked", "days_ago": 12},
+        {"event": "status_change", "from": "blocked", "to": "in_progress", "days_ago": 6}
+      ]
+    },
+    {
+      "id": "T-302",
+      "title": "Fix memory leak in worker pool",
+      "status": "in_progress",
+      "priority": "medium",
+      "owner": "oscar",
+      "team": "team-backend",
+      "service": "worker",
+      "done_criteria": null,
+      "success_metric": null,
+      "age_days": 10,
+      "in_report": true,
+      "labels": ["bug", "critical"],
+      "history": [
+        {"event": "status_change", "from": "open", "to": "in_progress", "days_ago": 8},
+        {"event": "status_change", "from": "in_progress", "to": "blocked", "days_ago": 5},
+        {"event": "status_change", "from": "blocked", "to": "in_progress", "days_ago": 2}
+      ]
+    },
+    {
+      "id": "T-303",
+      "title": "Implement caching layer for product catalog",
+      "status": "open",
+      "priority": "low",
+      "owner": null,
+      "team": null,
+      "service": "catalog",
+      "done_criteria": null,
+      "success_metric": null,
+      "age_days": 22,
+      "in_report": false,
+      "labels": ["performance", "p0"],
+      "history": []
+    },
+    {
+      "id": "T-304",
+      "title": "Reduce alert noise in monitoring",
+      "status": "in_progress",
+      "priority": "high",
+      "owner": "petra",
+      "team": "team-sre",
+      "service": "monitoring",
+      "done_criteria": "Alert volume reduced by 40%",
+      "success_metric": "fewer than 10 false-positive alerts per day",
+      "age_days": 6,
+      "in_report": true,
+      "labels": ["observability"],
+      "history": [
+        {"event": "status_change", "from": "open", "to": "in_progress", "days_ago": 4}
+      ]
+    },
+    {
+      "id": "T-305",
+      "title": "Evaluate database sharding strategy",
+      "status": "open",
+      "priority": null,
+      "owner": null,
+      "team": null,
+      "service": null,
+      "done_criteria": null,
+      "success_metric": null,
+      "age_days": 9,
+      "in_report": false,
+      "labels": ["architecture"],
+      "history": []
+    },
+    {
+      "id": "T-306",
+      "title": "Refactor deployment pipeline",
+      "status": "in_progress",
+      "priority": "critical",
+      "owner": "quinn",
+      "team": "team-platform",
+      "service": "ci-platform",
+      "done_criteria": null,
+      "success_metric": null,
+      "age_days": 20,
+      "in_report": true,
+      "labels": ["devops"],
+      "history": [
+        {"event": "status_change", "from": "open", "to": "in_progress", "days_ago": 18},
+        {"event": "status_change", "from": "in_progress", "to": "blocked", "days_ago": 14},
+        {"event": "status_change", "from": "blocked", "to": "in_progress", "days_ago": 10},
+        {"event": "status_change", "from": "in_progress", "to": "blocked", "days_ago": 6},
+        {"event": "status_change", "from": "blocked", "to": "in_progress", "days_ago": 2}
+      ]
+    }
+  ],
+  "pull_requests": [
+    {
+      "id": "PR-301",
+      "title": "Add integration connector scaffolding",
+      "author": "rachel",
+      "reviewers": [],
+      "status": "open",
+      "linked_task_id": "T-301",
+      "age_days": 7
+    }
+  ],
+  "services": [
+    {
+      "id": "integrations",
+      "name": "Integrations Service",
+      "owner_team": null,
+      "criticality": "p1"
+    },
+    {
+      "id": "worker",
+      "name": "Worker Pool Service",
+      "owner_team": "team-backend",
+      "criticality": "p1"
+    },
+    {
+      "id": "catalog",
+      "name": "Product Catalog Service",
+      "owner_team": null,
+      "criticality": "p0"
+    },
+    {
+      "id": "monitoring",
+      "name": "Monitoring Service",
+      "owner_team": "team-sre",
+      "criticality": "p1"
+    },
+    {
+      "id": "ci-platform",
+      "name": "CI/CD Platform",
+      "owner_team": "team-platform",
+      "criticality": "p2"
+    }
+  ]
+}
