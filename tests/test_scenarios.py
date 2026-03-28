@@ -107,5 +107,32 @@ class TestMixedCaseScenario(unittest.TestCase):
         )
 
 
+class TestFalsePositiveGuard(unittest.TestCase):
+
+    def setUp(self):
+        self.data = run_scenario("false_positive_guard.json")
+
+    def test_false_positive_guard_detects_no_patterns(self):
+        self.assertEqual(
+            len(self.data["results"]), 0,
+            f"Expected 0 patterns but got: {[r.pattern for r in self.data['results']]}"
+        )
+
+    def test_findings_list_is_empty(self):
+        self.assertEqual(self.data["output"]["findings"], [])
+
+    def test_output_is_valid_json(self):
+        import json
+        serialized = json.dumps(self.data["output"])
+        self.assertIsInstance(serialized, str)
+
+    def test_input_summary_counts_are_correct(self):
+        summary = self.data["output"]["input_summary"]
+        payload = self.data["payload"]
+        self.assertEqual(summary["task_count"], len(payload["tasks"]))
+        self.assertEqual(summary["pr_count"], len(payload["pull_requests"]))
+        self.assertEqual(summary["service_count"], len(payload["services"]))
+
+
 if __name__ == "__main__":
     unittest.main()

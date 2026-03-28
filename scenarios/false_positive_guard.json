@@ -1,0 +1,60 @@
+{
+  "source": {
+    "category": "work_tracking",
+    "mode": "scenario",
+    "product": "manual"
+  },
+  "tasks": [
+    {
+      "id": "T-601",
+      "title": "Implement rate-limit headers on API gateway",
+      "status": "in_progress",
+      "priority": "high",
+      "owner": "alice",
+      "team": "team-backend",
+      "service": "svc-api",
+      "done_criteria": "All responses include RateLimit-Remaining and RateLimit-Reset headers",
+      "success_metric": "Header presence confirmed in 100% of staging responses",
+      "age_days": 4,
+      "in_report": true,
+      "labels": ["backend", "api"],
+      "history": [
+        {"event": "status_change", "from": "open", "to": "in_progress", "days_ago": 3}
+      ]
+    },
+    {
+      "id": "T-602",
+      "title": "Add structured logging to auth service",
+      "status": "open",
+      "priority": "medium",
+      "owner": "bob",
+      "team": "team-backend",
+      "service": "svc-api",
+      "done_criteria": "All auth events emit JSON logs with trace_id, user_id, and outcome fields",
+      "success_metric": "Zero unstructured log lines in production after deploy",
+      "age_days": 2,
+      "in_report": true,
+      "labels": ["observability"],
+      "history": []
+    }
+  ],
+  "pull_requests": [
+    {
+      "id": "PR-601",
+      "title": "Add rate-limit header middleware",
+      "author": "alice",
+      "reviewers": ["carol"],
+      "status": "open",
+      "linked_task_id": "T-601",
+      "age_days": 1
+    }
+  ],
+  "services": [
+    {
+      "id": "svc-api",
+      "name": "API Gateway",
+      "owner_team": "team-backend",
+      "criticality": "p1"
+    }
+  ]
+}
