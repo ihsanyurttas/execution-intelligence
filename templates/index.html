@@ -27,13 +27,9 @@
     header h1 { font-size: 16px; font-weight: 600; color: #f8fafc; }
     header span { font-size: 12px; color: #64748b; }
 
-    .main {
-      display: flex;
-      flex: 1;
-      overflow: hidden;
-    }
+    .main { display: flex; flex: 1; overflow: hidden; }
 
-    /* LEFT PANEL */
+    /* ── LEFT PANEL ── */
     .left {
       width: 46%;
       border-right: 1px solid #1e2433;
@@ -52,11 +48,7 @@
       text-transform: uppercase;
     }
 
-    .scenario-bar {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
+    .scenario-bar { display: flex; gap: 8px; flex-wrap: wrap; }
 
     .scenario-btn {
       background: #1e2433;
@@ -107,7 +99,7 @@
     .analyze-btn:hover { background: #3d5ce6; }
     .analyze-btn:disabled { background: #2d3748; color: #64748b; cursor: not-allowed; }
 
-    /* RIGHT PANEL */
+    /* ── RIGHT PANEL ── */
     .right {
       flex: 1;
       overflow-y: auto;
@@ -130,21 +122,71 @@
     .empty-state .icon { font-size: 40px; }
     .empty-state p { font-size: 13px; }
 
-    /* SUMMARY BAR */
-    .summary-bar {
+    /* ── EVALUATION SUMMARY PANEL ── */
+    .eval-summary {
       background: #1a1f2e;
       border: 1px solid #1e2433;
       border-radius: 8px;
-      padding: 12px 16px;
-      display: flex;
-      gap: 24px;
-      align-items: center;
+      padding: 14px 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
     }
 
-    .summary-bar .stat { font-size: 12px; color: #64748b; }
-    .summary-bar .stat strong { color: #e2e8f0; margin-right: 4px; }
+    .eval-block {}
+    .eval-block .eval-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #4a5568;
+      margin-bottom: 6px;
+    }
 
-    /* FINDING CARD */
+    .eval-block .eval-value {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    .eval-block .eval-value strong {
+      color: #e2e8f0;
+      font-weight: 500;
+    }
+
+    .eval-block .eval-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .eval-block .eval-list li {
+      font-size: 12px;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .eval-block .eval-list li::before {
+      content: "";
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #2d3748;
+      flex-shrink: 0;
+    }
+
+    .eval-ts {
+      grid-column: 1 / -1;
+      font-size: 10px;
+      color: #4a5568;
+      border-top: 1px solid #1e2433;
+      padding-top: 10px;
+      margin-top: 2px;
+    }
+
+    /* ── FINDING CARD ── */
     .finding {
       background: #1a1f2e;
       border: 1px solid #1e2433;
@@ -153,10 +195,10 @@
     }
 
     .finding-header {
-      padding: 14px 16px;
+      padding: 12px 16px;
       display: flex;
-      align-items: flex-start;
-      gap: 12px;
+      align-items: center;
+      gap: 10px;
       border-bottom: 1px solid #1e2433;
     }
 
@@ -168,21 +210,37 @@
       border-radius: 4px;
       white-space: nowrap;
       text-transform: uppercase;
-      margin-top: 2px;
+      flex-shrink: 0;
     }
 
-    .badge-orphan_work           { background: #7c3aed22; color: #a78bfa; border: 1px solid #7c3aed44; }
-    .badge-undefined_outcome     { background: #d9770622; color: #fbbf24; border: 1px solid #d9770644; }
+    .badge-orphan_work                  { background: #7c3aed22; color: #a78bfa; border: 1px solid #7c3aed44; }
+    .badge-undefined_outcome            { background: #d9770622; color: #fbbf24; border: 1px solid #d9770644; }
     .badge-priority_translation_failure { background: #dc262622; color: #f87171; border: 1px solid #dc262644; }
-    .badge-untracked_work_dies   { background: #0891b222; color: #38bdf8; border: 1px solid #0891b244; }
-    .badge-circulating_work      { background: #05966922; color: #34d399; border: 1px solid #05966944; }
+    .badge-untracked_work_dies          { background: #0891b222; color: #38bdf8; border: 1px solid #0891b244; }
+    .badge-circulating_work             { background: #05966922; color: #34d399; border: 1px solid #05966944; }
 
     .finding-issue {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
       color: #f1f5f9;
       line-height: 1.4;
+      flex: 1;
     }
+
+    /* card-level urgency (top-right) */
+    .card-urgency {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .card-urgency-immediate  { background: #f8717122; color: #f87171; border: 1px solid #f8717144; }
+    .card-urgency-short_term { background: #fbbf2422; color: #fbbf24; border: 1px solid #fbbf2444; }
+    .card-urgency-ongoing    { background: #34d39922; color: #34d399; border: 1px solid #34d39944; }
 
     .finding-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 14px; }
 
@@ -195,12 +253,7 @@
       margin-bottom: 6px;
     }
 
-    .interpretation {
-      font-size: 12px;
-      color: #94a3b8;
-      line-height: 1.6;
-    }
-
+    /* ── EVIDENCE ── */
     .evidence-list { list-style: none; display: flex; flex-direction: column; gap: 5px; }
 
     .evidence-list li {
@@ -213,33 +266,158 @@
       line-height: 1.4;
     }
 
+    .evidence-list li.hidden { display: none; }
+    .evidence-list li.visible { display: list-item; }
+
+    .evidence-more {
+      font-size: 11px;
+      color: #4a5568;
+      cursor: pointer;
+      padding: 4px 0;
+      background: none;
+      border: none;
+      text-align: left;
+    }
+
+    .evidence-more:hover { color: #94a3b8; }
+
+    /* ── INTERPRETATION (inline, short) ── */
+    .interpretation-short {
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    /* ── IMPROVEMENTS (primary) ── */
+    .improvements-section {
+      background: #111827;
+      border: 1px solid #1e2d40;
+      border-radius: 8px;
+      padding: 14px;
+    }
+
+    .improvements-section .sub-label {
+      font-size: 10px;
+      color: #94a3b8;
+      margin-bottom: 10px;
+    }
+
     .improvements { display: flex; flex-direction: column; gap: 8px; }
 
     .improvement {
+      background: #1a2235;
+      border: 1px solid #1e2d40;
+      border-radius: 7px;
+      padding: 10px 12px;
       display: flex;
       gap: 10px;
       align-items: flex-start;
-      padding: 10px 12px;
-      background: #0f1117;
-      border-radius: 6px;
     }
 
-    .urgency-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      margin-top: 4px;
+    .task-check {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
+      color: #4a5568;
+      margin-top: 2px;
       flex-shrink: 0;
+      user-select: none;
     }
 
-    .urgency-immediate { background: #f87171; }
-    .urgency-short_term { background: #fbbf24; }
-    .urgency-ongoing { background: #34d399; }
+    .improvement-right { display: flex; flex-direction: column; gap: 6px; flex: 1; }
 
-    .improvement-text { font-size: 12px; color: #94a3b8; line-height: 1.5; }
-    .improvement-meta { font-size: 11px; color: #4a5568; margin-top: 3px; }
+    .improvement-action {
+      font-size: 13px;
+      font-weight: 500;
+      color: #e2e8f0;
+      line-height: 1.5;
+    }
 
-    /* ERROR */
+    .improvement-footer { display: flex; align-items: center; gap: 8px; }
+
+    .urgency-badge {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    .urgency-immediate  { background: #f8717122; color: #f87171; border: 1px solid #f8717144; }
+    .urgency-short_term { background: #fbbf2422; color: #fbbf24; border: 1px solid #fbbf2444; }
+    .urgency-ongoing    { background: #34d39922; color: #34d399; border: 1px solid #34d39944; }
+
+    .assignee-chip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: #0f1117;
+      border: 1px solid #2d3748;
+      border-radius: 20px;
+      padding: 2px 10px 2px 5px;
+      font-size: 11px;
+      color: #64748b;
+    }
+
+    .assignee-chip .avatar {
+      width: 15px; height: 15px;
+      border-radius: 50%;
+      background: #2d3748;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      color: #94a3b8;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    /* ── MY CONCERN ── */
+    .concern-section { display: flex; flex-direction: column; gap: 6px; }
+
+    .concern-textarea {
+      flex: unset;
+      height: 56px;
+      font-size: 12px;
+      color: #94a3b8;
+      background: #0f1117;
+      border: 1px solid #1e2433;
+      border-radius: 6px;
+      padding: 8px 10px;
+      resize: none;
+      font-family: inherit;
+      line-height: 1.5;
+    }
+
+    .concern-textarea::placeholder { color: #2d3748; }
+    .concern-textarea:focus { border-color: #2d3748; outline: none; }
+
+    /* ── WHY IT MATTERS (collapsible) ── */
+    .why-toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .why-toggle .sub-label { margin-bottom: 0; }
+
+    .why-chevron { font-size: 9px; color: #4a5568; transition: transform 0.2s; }
+    .why-chevron.open { transform: rotate(90deg); }
+
+    .why-body {
+      font-size: 11px;
+      color: #4a5568;
+      line-height: 1.6;
+      margin-top: 6px;
+      display: none;
+    }
+
+    .why-body.open { display: block; }
+
+    /* ── ERROR / SPINNER ── */
     .error-box {
       background: #dc262618;
       border: 1px solid #dc262644;
@@ -249,7 +427,6 @@
       color: #f87171;
     }
 
-    /* SPINNER */
     .spinner {
       display: inline-block;
       width: 14px; height: 14px;
@@ -311,21 +488,18 @@
     services: []
   };
 
-  // Load scenario list
+  let currentScenario = "blank";
+
   fetch("/scenarios")
     .then(r => r.json())
     .then(names => {
       const bar = document.getElementById("scenarioBar");
       bar.innerHTML = "";
 
-      // Blank button
       const blank = document.createElement("button");
       blank.className = "scenario-btn active";
       blank.textContent = "blank";
-      blank.onclick = () => {
-        setActive(blank);
-        setPayload(EMPTY_PAYLOAD);
-      };
+      blank.onclick = () => { setActive(blank, "blank"); setPayload(EMPTY_PAYLOAD); };
       bar.appendChild(blank);
 
       names.forEach(name => {
@@ -333,10 +507,8 @@
         btn.className = "scenario-btn";
         btn.textContent = name.replace(/_/g, " ").replace(" strong", " ★");
         btn.onclick = () => {
-          setActive(btn);
-          fetch(`/scenarios/${name}`)
-            .then(r => r.json())
-            .then(data => setPayload(data));
+          setActive(btn, name);
+          fetch(`/scenarios/${name}`).then(r => r.json()).then(setPayload);
         };
         bar.appendChild(btn);
       });
@@ -344,9 +516,10 @@
       setPayload(EMPTY_PAYLOAD);
     });
 
-  function setActive(btn) {
+  function setActive(btn, name) {
     document.querySelectorAll(".scenario-btn").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
+    currentScenario = name;
   }
 
   function setPayload(data) {
@@ -378,12 +551,10 @@
     .then(data => {
       btn.disabled = false;
       btn.textContent = "Analyze";
-
       if (data.error) {
         results.innerHTML = `<div class="error-box">${data.error}</div>`;
         return;
       }
-
       renderResults(data);
     })
     .catch(err => {
@@ -393,23 +564,71 @@
     });
   }
 
+  /* ── helpers ── */
+
+  function twoSentences(text) {
+    const m = text.match(/[^.!?]*[.!?]+/g);
+    if (!m) return text;
+    return m.slice(0, 2).join(" ").trim();
+  }
+
+  function cardUrgency(improvements) {
+    if (improvements.some(i => i.urgency === "immediate"))  return "immediate";
+    if (improvements.some(i => i.urgency === "short_term")) return "short_term";
+    return "ongoing";
+  }
+
+  function toggleWhy(id, toggle) {
+    document.getElementById(id).classList.toggle("open");
+    toggle.querySelector(".why-chevron").classList.toggle("open");
+  }
+
+  function toggleEvidence(btnEl, listId) {
+    const list = document.getElementById(listId);
+    const hidden = list.querySelectorAll("li.hidden");
+    const isExpanded = btnEl.dataset.expanded === "1";
+    hidden.forEach(li => { li.classList.toggle("hidden", isExpanded); li.classList.toggle("visible", !isExpanded); });
+    btnEl.dataset.expanded = isExpanded ? "0" : "1";
+    btnEl.textContent = isExpanded
+      ? `+${hidden.length} more`
+      : "show less";
+  }
+
+  /* ── render ── */
+
   function renderResults(data) {
     const results = document.getElementById("results");
     results.innerHTML = "";
 
     const { input_summary, findings, generated_at } = data;
 
-    // Summary bar
-    const summary = document.createElement("div");
-    summary.className = "summary-bar";
-    summary.innerHTML = `
-      <div class="stat"><strong>${findings.length}</strong> pattern(s) detected</div>
-      <div class="stat"><strong>${input_summary.task_count}</strong> tasks</div>
-      <div class="stat"><strong>${input_summary.pr_count}</strong> PRs</div>
-      <div class="stat"><strong>${input_summary.service_count}</strong> services</div>
-      <div class="stat" style="margin-left:auto">${generated_at}</div>
+    // 1. Evaluation summary panel
+    const patternList = findings.length
+      ? findings.map(f => `<li>${f.pattern.replace(/_/g, " ")}</li>`).join("")
+      : `<li style="color:#4a5568">none</li>`;
+
+    const evalPanel = document.createElement("div");
+    evalPanel.className = "eval-summary";
+    evalPanel.innerHTML = `
+      <div class="eval-block">
+        <div class="eval-label">Scenario</div>
+        <div class="eval-value"><strong>${currentScenario}</strong></div>
+      </div>
+      <div class="eval-block">
+        <div class="eval-label">Input</div>
+        <div class="eval-value">
+          tasks <strong>${input_summary.task_count}</strong> &nbsp;·&nbsp;
+          PRs <strong>${input_summary.pr_count}</strong> &nbsp;·&nbsp;
+          services <strong>${input_summary.service_count}</strong>
+        </div>
+      </div>
+      <div class="eval-block">
+        <div class="eval-label">Detected patterns (${findings.length})</div>
+        <ul class="eval-list">${patternList}</ul>
+      </div>
+      <div class="eval-ts">Generated at ${generated_at}</div>
     `;
-    results.appendChild(summary);
+    results.appendChild(evalPanel);
 
     if (findings.length === 0) {
       const empty = document.createElement("div");
@@ -419,42 +638,89 @@
       return;
     }
 
-    findings.forEach(f => {
+    findings.forEach((f, idx) => {
+      const uid = `f${idx}-${Math.random().toString(36).slice(2)}`;
+      const whyId = `why-${uid}`;
+      const evListId = `ev-${uid}`;
+
+      // Card-level urgency (derived)
+      const urgency = cardUrgency(f.suggested_improvements);
+      const urgencyLabel = { immediate: "high", short_term: "medium", ongoing: "low" }[urgency] || urgency;
+
+      // Evidence with collapse (show first 3, hide rest)
+      const EVIDENCE_LIMIT = 3;
+      const evItems = f.evidence.map((e, i) => {
+        const cls = i >= EVIDENCE_LIMIT ? "hidden" : "";
+        return `<li class="${cls}">${e}</li>`;
+      }).join("");
+      const hiddenCount = Math.max(0, f.evidence.length - EVIDENCE_LIMIT);
+      const moreBtn = hiddenCount > 0
+        ? `<button class="evidence-more" data-expanded="0" onclick="toggleEvidence(this, '${evListId}')">+${hiddenCount} more</button>`
+        : "";
+
+      // Interpretation — 2 sentences max
+      const shortInterp = twoSentences(f.interpretation);
+
+      // Improvements as task checklist
+      const improvements = f.suggested_improvements.map(imp => {
+        const initials = imp.owner_hint.split(" ").map(w => w[0]).join("").slice(0, 2);
+        const urgencyLabel = imp.urgency.replace("_", " ");
+        return `
+          <div class="improvement">
+            <span class="task-check">[ ]</span>
+            <div class="improvement-right">
+              <div class="improvement-action">${imp.action}</div>
+              <div class="improvement-footer">
+                <span class="urgency-badge urgency-${imp.urgency}">${urgencyLabel}</span>
+                <span class="assignee-chip">
+                  <span class="avatar">${initials}</span>
+                  ${imp.owner_hint}
+                </span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
       const card = document.createElement("div");
       card.className = "finding";
-
-      const urgencyColors = { immediate: "#f87171", short_term: "#fbbf24", ongoing: "#34d399" };
-
-      const improvements = f.suggested_improvements.map(imp => `
-        <div class="improvement">
-          <div class="urgency-dot urgency-${imp.urgency}"></div>
-          <div>
-            <div class="improvement-text">${imp.action}</div>
-            <div class="improvement-meta">${imp.owner_hint} · ${imp.urgency.replace("_", " ")}</div>
-          </div>
-        </div>
-      `).join("");
-
-      const evidence = f.evidence.map(e => `<li>${e}</li>`).join("");
-
       card.innerHTML = `
         <div class="finding-header">
           <span class="pattern-badge badge-${f.pattern}">${f.pattern.replace(/_/g, " ")}</span>
           <div class="finding-issue">${f.issue}</div>
+          <span class="card-urgency card-urgency-${urgency}">${urgencyLabel}</span>
         </div>
         <div class="finding-body">
-          <div>
-            <div class="sub-label">Why it matters</div>
-            <div class="interpretation">${f.interpretation}</div>
-          </div>
+
           <div>
             <div class="sub-label">Evidence (${f.evidence.length})</div>
-            <ul class="evidence-list">${evidence}</ul>
+            <ul class="evidence-list" id="${evListId}">${evItems}</ul>
+            ${moreBtn}
           </div>
+
           <div>
-            <div class="sub-label">Improvements</div>
+            <div class="sub-label">Interpretation</div>
+            <div class="interpretation-short">${shortInterp}</div>
+          </div>
+
+          <div class="improvements-section">
+            <div class="sub-label">Suggested improvements</div>
             <div class="improvements">${improvements}</div>
           </div>
+
+          <div class="concern-section">
+            <div class="sub-label">My concern</div>
+            <textarea class="concern-textarea" placeholder="Add your notes here..."></textarea>
+          </div>
+
+          <div>
+            <div class="why-toggle" onclick="toggleWhy('${whyId}', this)">
+              <span class="why-chevron">▶</span>
+              <span class="sub-label">Why it matters</span>
+            </div>
+            <div class="why-body" id="${whyId}">${f.interpretation}</div>
+          </div>
+
         </div>
       `;
 
