@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: exec-intel
+  namespace: exec-intel
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: exec-intel
+  template:
+    metadata:
+      labels:
+        app: exec-intel
+    spec:
+      containers:
+        - name: exec-intel
+          image: exec-intel:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5000
+          env:
+            - name: PORT
+              value: "5000"

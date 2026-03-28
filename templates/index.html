@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Execution Intelligence Engine</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 16px 24px;
+      border-bottom: 1px solid #1e2433;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    header h1 { font-size: 16px; font-weight: 600; color: #f8fafc; }
+    header span { font-size: 12px; color: #64748b; }
+
+    .main {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* LEFT PANEL */
+    .left {
+      width: 46%;
+      border-right: 1px solid #1e2433;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      gap: 14px;
+      overflow: hidden;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: #64748b;
+      text-transform: uppercase;
+    }
+
+    .scenario-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .scenario-btn {
+      background: #1e2433;
+      border: 1px solid #2d3748;
+      color: #94a3b8;
+      font-size: 12px;
+      padding: 5px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .scenario-btn:hover, .scenario-btn.active {
+      background: #2d3748;
+      color: #e2e8f0;
+      border-color: #4a5568;
+    }
+
+    textarea {
+      flex: 1;
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 8px;
+      color: #a8b4c8;
+      font-family: "JetBrains Mono", "Fira Code", monospace;
+      font-size: 12px;
+      line-height: 1.6;
+      padding: 14px;
+      resize: none;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    textarea:focus { border-color: #4f6ef7; }
+
+    .analyze-btn {
+      background: #4f6ef7;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 11px 0;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .analyze-btn:hover { background: #3d5ce6; }
+    .analyze-btn:disabled { background: #2d3748; color: #64748b; cursor: not-allowed; }
+
+    /* RIGHT PANEL */
+    .right {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #4a5568;
+      gap: 8px;
+    }
+
+    .empty-state .icon { font-size: 40px; }
+    .empty-state p { font-size: 13px; }
+
+    /* SUMMARY BAR */
+    .summary-bar {
+      background: #1a1f2e;
+      border: 1px solid #1e2433;
+      border-radius: 8px;
+      padding: 12px 16px;
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .summary-bar .stat { font-size: 12px; color: #64748b; }
+    .summary-bar .stat strong { color: #e2e8f0; margin-right: 4px; }
+
+    /* FINDING CARD */
+    .finding {
+      background: #1a1f2e;
+      border: 1px solid #1e2433;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .finding-header {
+      padding: 14px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      border-bottom: 1px solid #1e2433;
+    }
+
+    .pattern-badge {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 3px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .badge-orphan_work           { background: #7c3aed22; color: #a78bfa; border: 1px solid #7c3aed44; }
+    .badge-undefined_outcome     { background: #d9770622; color: #fbbf24; border: 1px solid #d9770644; }
+    .badge-priority_translation_failure { background: #dc262622; color: #f87171; border: 1px solid #dc262644; }
+    .badge-untracked_work_dies   { background: #0891b222; color: #38bdf8; border: 1px solid #0891b244; }
+    .badge-circulating_work      { background: #05966922; color: #34d399; border: 1px solid #05966944; }
+
+    .finding-issue {
+      font-size: 14px;
+      font-weight: 500;
+      color: #f1f5f9;
+      line-height: 1.4;
+    }
+
+    .finding-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 14px; }
+
+    .sub-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #4a5568;
+      margin-bottom: 6px;
+    }
+
+    .interpretation {
+      font-size: 12px;
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+
+    .evidence-list { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+
+    .evidence-list li {
+      font-size: 12px;
+      color: #94a3b8;
+      padding: 6px 10px;
+      background: #0f1117;
+      border-radius: 5px;
+      border-left: 2px solid #2d3748;
+      line-height: 1.4;
+    }
+
+    .improvements { display: flex; flex-direction: column; gap: 8px; }
+
+    .improvement {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 10px 12px;
+      background: #0f1117;
+      border-radius: 6px;
+    }
+
+    .urgency-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+
+    .urgency-immediate { background: #f87171; }
+    .urgency-short_term { background: #fbbf24; }
+    .urgency-ongoing { background: #34d399; }
+
+    .improvement-text { font-size: 12px; color: #94a3b8; line-height: 1.5; }
+    .improvement-meta { font-size: 11px; color: #4a5568; margin-top: 3px; }
+
+    /* ERROR */
+    .error-box {
+      background: #dc262618;
+      border: 1px solid #dc262644;
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 13px;
+      color: #f87171;
+    }
+
+    /* SPINNER */
+    .spinner {
+      display: inline-block;
+      width: 14px; height: 14px;
+      border: 2px solid #4f6ef744;
+      border-top-color: #4f6ef7;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Execution Intelligence Engine</h1>
+  <span>v0.1 — pattern detection</span>
+</header>
+
+<div class="main">
+
+  <!-- LEFT -->
+  <div class="left">
+    <div class="section-label">Load Scenario</div>
+    <div class="scenario-bar" id="scenarioBar">
+      <span style="font-size:12px;color:#4a5568">Loading...</span>
+    </div>
+
+    <div class="section-label">Payload (JSON)</div>
+    <textarea id="payloadInput" spellcheck="false" placeholder="Paste or edit your canonical payload JSON here..."></textarea>
+
+    <button class="analyze-btn" id="analyzeBtn" onclick="analyze()">Analyze</button>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right" id="results">
+    <div class="empty-state">
+      <div class="icon">⚙️</div>
+      <p>Load a scenario or paste a payload, then click <strong>Analyze</strong></p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const EMPTY_PAYLOAD = {
+    source: { category: "work_tracking", mode: "user_provided", product: "manual" },
+    tasks: [
+      {
+        id: "T-1", title: "Example task", status: "open",
+        priority: null, owner: null, team: null, service: null,
+        done_criteria: null, success_metric: null,
+        age_days: 10, in_report: false, labels: [], history: []
+      }
+    ],
+    pull_requests: [],
+    services: []
+  };
+
+  // Load scenario list
+  fetch("/scenarios")
+    .then(r => r.json())
+    .then(names => {
+      const bar = document.getElementById("scenarioBar");
+      bar.innerHTML = "";
+
+      // Blank button
+      const blank = document.createElement("button");
+      blank.className = "scenario-btn active";
+      blank.textContent = "blank";
+      blank.onclick = () => {
+        setActive(blank);
+        setPayload(EMPTY_PAYLOAD);
+      };
+      bar.appendChild(blank);
+
+      names.forEach(name => {
+        const btn = document.createElement("button");
+        btn.className = "scenario-btn";
+        btn.textContent = name.replace(/_/g, " ").replace(" strong", " ★");
+        btn.onclick = () => {
+          setActive(btn);
+          fetch(`/scenarios/${name}`)
+            .then(r => r.json())
+            .then(data => setPayload(data));
+        };
+        bar.appendChild(btn);
+      });
+
+      setPayload(EMPTY_PAYLOAD);
+    });
+
+  function setActive(btn) {
+    document.querySelectorAll(".scenario-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+  }
+
+  function setPayload(data) {
+    document.getElementById("payloadInput").value = JSON.stringify(data, null, 2);
+  }
+
+  function analyze() {
+    const btn = document.getElementById("analyzeBtn");
+    const results = document.getElementById("results");
+    let payload;
+
+    try {
+      payload = JSON.parse(document.getElementById("payloadInput").value);
+    } catch (e) {
+      results.innerHTML = `<div class="error-box">Invalid JSON: ${e.message}</div>`;
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Analyzing...';
+    results.innerHTML = "";
+
+    fetch("/analyze", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    })
+    .then(r => r.json())
+    .then(data => {
+      btn.disabled = false;
+      btn.textContent = "Analyze";
+
+      if (data.error) {
+        results.innerHTML = `<div class="error-box">${data.error}</div>`;
+        return;
+      }
+
+      renderResults(data);
+    })
+    .catch(err => {
+      btn.disabled = false;
+      btn.textContent = "Analyze";
+      results.innerHTML = `<div class="error-box">${err}</div>`;
+    });
+  }
+
+  function renderResults(data) {
+    const results = document.getElementById("results");
+    results.innerHTML = "";
+
+    const { input_summary, findings, generated_at } = data;
+
+    // Summary bar
+    const summary = document.createElement("div");
+    summary.className = "summary-bar";
+    summary.innerHTML = `
+      <div class="stat"><strong>${findings.length}</strong> pattern(s) detected</div>
+      <div class="stat"><strong>${input_summary.task_count}</strong> tasks</div>
+      <div class="stat"><strong>${input_summary.pr_count}</strong> PRs</div>
+      <div class="stat"><strong>${input_summary.service_count}</strong> services</div>
+      <div class="stat" style="margin-left:auto">${generated_at}</div>
+    `;
+    results.appendChild(summary);
+
+    if (findings.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "empty-state";
+      empty.innerHTML = `<div class="icon">✅</div><p>No patterns detected in this payload.</p>`;
+      results.appendChild(empty);
+      return;
+    }
+
+    findings.forEach(f => {
+      const card = document.createElement("div");
+      card.className = "finding";
+
+      const urgencyColors = { immediate: "#f87171", short_term: "#fbbf24", ongoing: "#34d399" };
+
+      const improvements = f.suggested_improvements.map(imp => `
+        <div class="improvement">
+          <div class="urgency-dot urgency-${imp.urgency}"></div>
+          <div>
+            <div class="improvement-text">${imp.action}</div>
+            <div class="improvement-meta">${imp.owner_hint} · ${imp.urgency.replace("_", " ")}</div>
+          </div>
+        </div>
+      `).join("");
+
+      const evidence = f.evidence.map(e => `<li>${e}</li>`).join("");
+
+      card.innerHTML = `
+        <div class="finding-header">
+          <span class="pattern-badge badge-${f.pattern}">${f.pattern.replace(/_/g, " ")}</span>
+          <div class="finding-issue">${f.issue}</div>
+        </div>
+        <div class="finding-body">
+          <div>
+            <div class="sub-label">Why it matters</div>
+            <div class="interpretation">${f.interpretation}</div>
+          </div>
+          <div>
+            <div class="sub-label">Evidence (${f.evidence.length})</div>
+            <ul class="evidence-list">${evidence}</ul>
+          </div>
+          <div>
+            <div class="sub-label">Improvements</div>
+            <div class="improvements">${improvements}</div>
+          </div>
+        </div>
+      `;
+
+      results.appendChild(card);
+    });
+  }
+</script>
+</body>
+</html>
