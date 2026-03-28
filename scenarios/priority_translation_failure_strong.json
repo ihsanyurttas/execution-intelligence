@@ -1,0 +1,114 @@
+{
+  "source": {
+    "category": "work_tracking",
+    "mode": "scenario",
+    "product": "manual"
+  },
+  "tasks": [
+    {
+      "id": "T-301",
+      "title": "Fix checkout crash on mobile",
+      "status": "in_progress",
+      "priority": null,
+      "owner": "alice",
+      "team": "team-mobile",
+      "service": "checkout",
+      "done_criteria": "No crash reported in Sentry",
+      "success_metric": "Crash-free rate > 99.5%",
+      "age_days": 5,
+      "in_report": true,
+      "labels": ["mobile", "bug"],
+      "history": []
+    },
+    {
+      "id": "T-302",
+      "title": "Remove deprecated payment gateway",
+      "status": "open",
+      "priority": "low",
+      "owner": "bob",
+      "team": "team-backend",
+      "service": "payments",
+      "done_criteria": "Old gateway code deleted",
+      "success_metric": "Zero references to legacy gateway",
+      "age_days": 3,
+      "in_report": true,
+      "labels": ["critical", "blocker"],
+      "history": []
+    },
+    {
+      "id": "T-303",
+      "title": "Scale up payments service",
+      "status": "open",
+      "priority": "critical",
+      "owner": "carol",
+      "team": "team-backend",
+      "service": "payments",
+      "done_criteria": "Handles 10k rps without errors",
+      "success_metric": "p99 < 300ms at peak load",
+      "age_days": 2,
+      "in_report": true,
+      "labels": ["backend"],
+      "history": []
+    },
+    {
+      "id": "T-304",
+      "title": "Add retry logic to payments service",
+      "status": "in_progress",
+      "priority": "high",
+      "owner": "dave",
+      "team": "team-backend",
+      "service": "payments",
+      "done_criteria": "Retries on 5xx, max 3 attempts",
+      "success_metric": "Error rate drops below 0.1%",
+      "age_days": 6,
+      "in_report": true,
+      "labels": ["reliability"],
+      "history": []
+    },
+    {
+      "id": "T-305",
+      "title": "Update payments service docs",
+      "status": "open",
+      "priority": "medium",
+      "owner": "eve",
+      "team": "team-backend",
+      "service": "payments",
+      "done_criteria": "Docs updated in Confluence",
+      "success_metric": null,
+      "age_days": 4,
+      "in_report": true,
+      "labels": ["docs"],
+      "history": []
+    },
+    {
+      "id": "T-306",
+      "title": "Write quarterly report",
+      "status": "done",
+      "priority": null,
+      "owner": "frank",
+      "team": "team-ops",
+      "service": null,
+      "done_criteria": null,
+      "success_metric": null,
+      "age_days": 20,
+      "in_report": true,
+      "labels": [],
+      "history": []
+    }
+  ],
+  "pull_requests": [],
+  "services": [
+    {
+      "id": "checkout",
+      "name": "Checkout Service",
+      "owner_team": "team-mobile",
+      "criticality": "p0"
+    },
+    {
+      "id": "payments",
+      "name": "Payments Service",
+      "owner_team": "team-backend",
+      "criticality": "p0"
+    }
+  ]
+}

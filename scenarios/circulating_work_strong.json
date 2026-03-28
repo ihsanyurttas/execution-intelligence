@@ -1,0 +1,105 @@
+{
+  "source": {
+    "category": "work_tracking",
+    "mode": "scenario",
+    "product": "manual"
+  },
+  "tasks": [
+    {
+      "id": "T-501",
+      "title": "Migrate database to Postgres 15",
+      "status": "in_progress",
+      "priority": "high",
+      "owner": "alice",
+      "team": "team-data",
+      "service": "db",
+      "done_criteria": "All queries pass on Postgres 15",
+      "success_metric": "Zero query regressions in staging",
+      "age_days": 18,
+      "in_report": true,
+      "labels": ["data", "migration"],
+      "history": [
+        {"event": "status_change", "from": "open", "to": "in_progress", "days_ago": 16},
+        {"event": "status_change", "from": "in_progress", "to": "blocked", "days_ago": 12},
+        {"event": "status_change", "from": "blocked", "to": "in_progress", "days_ago": 8}
+      ]
+    },
+    {
+      "id": "T-502",
+      "title": "Implement SSO for admin panel",
+      "status": "open",
+      "priority": "medium",
+      "owner": "bob",
+      "team": "team-auth",
+      "service": "auth",
+      "done_criteria": "Admin can log in via SSO",
+      "success_metric": "SSO success rate > 99%",
+      "age_days": 20,
+      "in_report": true,
+      "labels": ["auth"],
+      "history": [
+        {"event": "status_change", "from": "open", "to": "in_progress", "days_ago": 18},
+        {"event": "status_change", "from": "in_progress", "to": "open", "days_ago": 14}
+      ]
+    },
+    {
+      "id": "T-503",
+      "title": "Add end-to-end encryption for messages",
+      "status": "in_progress",
+      "priority": "critical",
+      "owner": "carol",
+      "team": "team-security",
+      "service": "messaging",
+      "done_criteria": "All messages encrypted at rest and in transit",
+      "success_metric": "Pen test passes with no findings",
+      "age_days": 25,
+      "in_report": true,
+      "labels": ["security"],
+      "history": [
+        {"event": "status_change", "from": "open", "to": "in_progress", "days_ago": 22},
+        {"event": "owner_change", "from": "dave", "to": "carol", "days_ago": 18}
+      ]
+    },
+    {
+      "id": "T-504",
+      "title": "Decommission legacy monolith",
+      "status": "done",
+      "priority": "high",
+      "owner": "dave",
+      "team": "team-platform",
+      "service": null,
+      "done_criteria": "Monolith shut down",
+      "success_metric": "Zero traffic to old endpoints",
+      "age_days": 60,
+      "in_report": true,
+      "labels": [],
+      "history": [
+        {"event": "status_change", "from": "open", "to": "in_progress", "days_ago": 55},
+        {"event": "status_change", "from": "in_progress", "to": "blocked", "days_ago": 40},
+        {"event": "status_change", "from": "blocked", "to": "in_progress", "days_ago": 30},
+        {"event": "status_change", "from": "in_progress", "to": "done", "days_ago": 5}
+      ]
+    }
+  ],
+  "pull_requests": [],
+  "services": [
+    {
+      "id": "db",
+      "name": "Database Service",
+      "owner_team": "team-data",
+      "criticality": "p0"
+    },
+    {
+      "id": "auth",
+      "name": "Auth Service",
+      "owner_team": "team-auth",
+      "criticality": "p0"
+    },
+    {
+      "id": "messaging",
+      "name": "Messaging Service",
+      "owner_team": "team-security",
+      "criticality": "p1"
+    }
+  ]
+}
