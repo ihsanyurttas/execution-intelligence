@@ -126,11 +126,11 @@ class TestUndefinedOutcome(unittest.TestCase):
 
 class TestPriorityTranslationFailure(unittest.TestCase):
 
-    def test_active_task_with_no_priority_detected(self):
-        p = payload([task(priority=None)])
+    def test_active_task_with_no_priority_not_detected(self):
+        # missing priority alone is a data quality issue, not a pattern
+        p = payload([task(priority=None, labels=[])])
         result = detect_priority_translation_failure(p)
-        self.assertIsNotNone(result)
-        self.assertIn("T-1", result.matched_ids)
+        self.assertIsNone(result)
 
     def test_urgency_label_with_low_priority_detected(self):
         p = payload([task(priority="low", labels=["critical"])])
@@ -220,11 +220,21 @@ class TestCirculatingWork(unittest.TestCase):
         result = detect_circulating_work(p)
         self.assertIsNotNone(result)
 
-    def test_old_task_with_history_detected(self):
-        history = [self._status_change("open", "in_progress", 12)]
+    def test_old_task_with_multiple_status_changes_detected(self):
+        history = [
+            self._status_change("open", "in_progress", 12),
+            self._status_change("in_progress", "blocked", 8),
+        ]
         p = payload([task(age_days=20, history=history)])
         result = detect_circulating_work(p)
         self.assertIsNotNone(result)
+
+    def test_old_task_with_single_status_change_not_detected(self):
+        # age + 1 status change is normal progression, not circulating
+        history = [self._status_change("open", "in_progress", 12)]
+        p = payload([task(age_days=20, history=history)])
+        result = detect_circulating_work(p)
+        self.assertIsNone(result)
 
     def test_new_task_with_no_history_not_detected(self):
         p = payload([task(age_days=2, history=[])])

@@ -74,6 +74,7 @@ class PatternResult:
     pattern: str
     matched_ids: list[str]  # task/PR ids that triggered this pattern
     signals: list[str]      # human-readable observations from the input
+    severity: str = "medium"  # high | medium | low
 
 
 @dataclass
@@ -86,6 +87,7 @@ class ImprovementTask:
 @dataclass
 class Finding:
     pattern: str
+    severity: str           # high | medium | low
     issue: str
     evidence: list[str]
     interpretation: str

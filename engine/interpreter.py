@@ -28,6 +28,7 @@ def interpret(result: PatternResult) -> Finding:
 def _orphan_work(result: PatternResult) -> Finding:
     return Finding(
         pattern=result.pattern,
+        severity=result.severity,
         issue=(
             f"{len(result.matched_ids)} work item(s) have no clear owner, "
             "team, or accountable service."
@@ -79,6 +80,7 @@ def _orphan_work(result: PatternResult) -> Finding:
 def _undefined_outcome(result: PatternResult) -> Finding:
     return Finding(
         pattern=result.pattern,
+        severity=result.severity,
         issue=(
             f"{len(result.matched_ids)} active task(s) have no done criteria "
             "or success metric defined."
@@ -122,6 +124,7 @@ def _undefined_outcome(result: PatternResult) -> Finding:
 def _priority_translation_failure(result: PatternResult) -> Finding:
     return Finding(
         pattern=result.pattern,
+        severity=result.severity,
         issue=(
             f"{len(result.matched_ids)} task(s) show priority inconsistency — "
             "missing priority, urgency/priority mismatch, or spread across a single service."
@@ -168,6 +171,7 @@ def _priority_translation_failure(result: PatternResult) -> Finding:
 def _untracked_work_dies(result: PatternResult) -> Finding:
     return Finding(
         pattern=result.pattern,
+        severity=result.severity,
         issue=(
             f"{len(result.matched_ids)} active task(s) are not tracked in reports "
             "or have no visible metric — invisible to the team."
@@ -211,6 +215,7 @@ def _untracked_work_dies(result: PatternResult) -> Finding:
 def _circulating_work(result: PatternResult) -> Finding:
     return Finding(
         pattern=result.pattern,
+        severity=result.severity,
         issue=(
             f"{len(result.matched_ids)} task(s) are moving repeatedly "
             "without converging toward completion."

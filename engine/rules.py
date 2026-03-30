@@ -104,6 +104,7 @@ def detect_orphan_work(payload: dict) -> PatternResult | None:
         pattern="orphan_work",
         matched_ids=list(dict.fromkeys(matched_ids)),
         signals=signals,
+        severity="high",
     )
 
 
@@ -145,6 +146,7 @@ def detect_undefined_outcome(payload: dict) -> PatternResult | None:
         pattern="undefined_outcome",
         matched_ids=matched_ids,
         signals=signals,
+        severity="high",
     )
 
 
@@ -172,12 +174,7 @@ def detect_priority_translation_failure(payload: dict) -> PatternResult | None:
         priority = task.get("priority")
         labels = set(task.get("labels", []))
 
-        if not priority:
-            matched_ids.append(tid)
-            signals.append(
-                f"Task {_label(task, tid)} is active with no priority set"
-            )
-        elif labels & URGENCY_LABELS and priority not in ("critical", "high"):
+        if labels & URGENCY_LABELS and priority not in ("critical", "high"):
             matched_ids.append(tid)
             signals.append(
                 f"Task {tid} carries urgency labels "
@@ -206,6 +203,7 @@ def detect_priority_translation_failure(payload: dict) -> PatternResult | None:
         pattern="priority_translation_failure",
         matched_ids=list(dict.fromkeys(matched_ids)),
         signals=signals,
+        severity="medium",
     )
 
 
@@ -252,6 +250,7 @@ def detect_untracked_work_dies(payload: dict) -> PatternResult | None:
         pattern="untracked_work_dies",
         matched_ids=list(dict.fromkeys(matched_ids)),
         signals=signals,
+        severity="high",
     )
 
 
@@ -305,12 +304,12 @@ def detect_circulating_work(payload: dict) -> PatternResult | None:
                 f"Task {tid} returned to a previously visited status — work is cycling"
             )
 
-        # Old task still moving
-        if age >= CIRCULATION_AGE_THRESHOLD and len(history) > 0:
+        # Old task still moving with multiple status changes — not just stale
+        if age >= CIRCULATION_AGE_THRESHOLD and len(status_changes) >= 2:
             if tid not in matched_ids:
                 matched_ids.append(tid)
             signals.append(
-                f"Task {tid} is {age} days old with {len(history)} history events "
+                f"Task {tid} is {age} days old with {len(status_changes)} status changes "
                 "but has not completed"
             )
 
@@ -321,6 +320,7 @@ def detect_circulating_work(payload: dict) -> PatternResult | None:
         pattern="circulating_work",
         matched_ids=list(dict.fromkeys(matched_ids)),
         signals=signals,
+        severity="low",
     )
 
 

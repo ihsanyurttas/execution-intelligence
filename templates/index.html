@@ -238,9 +238,9 @@
       flex-shrink: 0;
     }
 
-    .card-urgency-immediate  { background: #f8717122; color: #f87171; border: 1px solid #f8717144; }
-    .card-urgency-short_term { background: #fbbf2422; color: #fbbf24; border: 1px solid #fbbf2444; }
-    .card-urgency-ongoing    { background: #34d39922; color: #34d399; border: 1px solid #34d39944; }
+    .card-urgency-high   { background: #f8717122; color: #f87171; border: 1px solid #f8717144; }
+    .card-urgency-medium { background: #fbbf2422; color: #fbbf24; border: 1px solid #fbbf2444; }
+    .card-urgency-low    { background: #34d39922; color: #34d399; border: 1px solid #34d39944; }
 
     .finding-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 14px; }
 
@@ -572,12 +572,6 @@
     return m.slice(0, 2).join(" ").trim();
   }
 
-  function cardUrgency(improvements) {
-    if (improvements.some(i => i.urgency === "immediate"))  return "immediate";
-    if (improvements.some(i => i.urgency === "short_term")) return "short_term";
-    return "ongoing";
-  }
-
   function toggleWhy(id, toggle) {
     document.getElementById(id).classList.toggle("open");
     toggle.querySelector(".why-chevron").classList.toggle("open");
@@ -643,9 +637,9 @@
       const whyId = `why-${uid}`;
       const evListId = `ev-${uid}`;
 
-      // Card-level urgency (derived)
-      const urgency = cardUrgency(f.suggested_improvements);
-      const urgencyLabel = { immediate: "high", short_term: "medium", ongoing: "low" }[urgency] || urgency;
+      // Card-level severity from engine
+      const urgency = f.severity;
+      const urgencyLabel = f.severity;
 
       // Evidence with collapse (show first 3, hide rest)
       const EVIDENCE_LIMIT = 3;
