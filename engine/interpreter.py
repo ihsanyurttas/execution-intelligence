@@ -26,6 +26,85 @@ def interpret(result: PatternResult) -> Finding:
 # ---------------------------------------------------------------------------
 
 def _orphan_work(result: PatternResult) -> Finding:
+    ctx = result.context
+    tasks_no_owner: list[str] = ctx.get("tasks_no_owner", [])
+    services_no_team: list[str] = ctx.get("services_no_owner_team", [])
+    tasks_churning: list[str] = ctx.get("tasks_churning", [])
+    prs_no_reviewer: list[str] = ctx.get("prs_no_reviewer", [])
+
+    # Evidence-driven interpretation
+    parts: list[str] = []
+    if tasks_no_owner and services_no_team:
+        parts.append(
+            f"{', '.join(tasks_no_owner)} {'has' if len(tasks_no_owner) == 1 else 'have'} "
+            f"no owner and no team, and "
+            f"{'their' if len(tasks_no_owner) > 1 else 'its'} linked "
+            f"{'services' if len(services_no_team) > 1 else 'service'} "
+            f"({', '.join(services_no_team)}) also {'have' if len(services_no_team) > 1 else 'has'} "
+            f"no owner_team — there is no accountability at either the task or service level"
+        )
+    elif tasks_no_owner:
+        parts.append(
+            f"{', '.join(tasks_no_owner)} {'has' if len(tasks_no_owner) == 1 else 'have'} "
+            "no owner and no team — no one is accountable for their completion"
+        )
+    elif services_no_team:
+        parts.append(
+            f"{'Services' if len(services_no_team) > 1 else 'Service'} "
+            f"{', '.join(services_no_team)} "
+            f"{'have' if len(services_no_team) > 1 else 'has'} no owner_team, "
+            "leaving linked tasks structurally unaccountable"
+        )
+    if tasks_churning:
+        parts.append(
+            f"{', '.join(tasks_churning)} {'has' if len(tasks_churning) == 1 else 'have'} "
+            "changed ownership repeatedly without settling on a responsible party"
+        )
+    if prs_no_reviewer:
+        parts.append(
+            f"{', '.join(prs_no_reviewer)} {'is' if len(prs_no_reviewer) == 1 else 'are'} "
+            "open with no reviewer assigned — review is blocked with no owner"
+        )
+    interpretation = ". ".join(parts) + "." if parts else "Work items have no accountable owner."
+
+    # Specific, entity-level improvement actions
+    improvements: list[ImprovementTask] = []
+
+    for tid in tasks_no_owner:
+        improvements.append(ImprovementTask(
+            action=f"Assign a directly responsible owner to {tid} before it advances further",
+            owner_hint="team lead",
+            urgency="immediate",
+        ))
+
+    for svc in services_no_team:
+        improvements.append(ImprovementTask(
+            action=f"Assign an owner_team to {svc} to establish service-level accountability",
+            owner_hint="engineering manager",
+            urgency="immediate",
+        ))
+
+    for tid in tasks_churning:
+        improvements.append(ImprovementTask(
+            action=f"Resolve ownership for {tid}: declare a single accountable person and do not transfer again without a documented reason",
+            owner_hint="engineering manager",
+            urgency="short_term",
+        ))
+
+    for pid in prs_no_reviewer:
+        improvements.append(ImprovementTask(
+            action=f"Assign at least one reviewer to {pid} or close it if it is no longer active",
+            owner_hint="tech lead",
+            urgency="immediate",
+        ))
+
+    if not tasks_no_owner and not prs_no_reviewer:
+        improvements.append(ImprovementTask(
+            action="Enforce an owner-required policy: block tasks from moving to in_progress without a named owner",
+            owner_hint="engineering manager",
+            urgency="short_term",
+        ))
+
     return Finding(
         pattern=result.pattern,
         severity=result.severity,
@@ -34,46 +113,8 @@ def _orphan_work(result: PatternResult) -> Finding:
             "team, or accountable service."
         ),
         evidence=result.signals,
-        interpretation=(
-            "Orphan work accumulates invisibly. Without a named owner, no one "
-            "escalates, no one prioritizes, and the work silently stalls or dies. "
-            "When ownership is also absent at the service level, the gap compounds: "
-            "even structural accountability is missing."
-        ),
-        suggested_improvements=[
-            ImprovementTask(
-                action=(
-                    f"Assign an explicit owner to each of the {len(result.matched_ids)} "
-                    "unowned items before the next planning session"
-                ),
-                owner_hint="team lead",
-                urgency="immediate",
-            ),
-            ImprovementTask(
-                action=(
-                    "Define an owner_team for every service that currently lacks one; "
-                    "block new tasks from being linked to ownerless services"
-                ),
-                owner_hint="engineering manager",
-                urgency="short_term",
-            ),
-            ImprovementTask(
-                action=(
-                    "Add a reviewer-required policy to the code review process "
-                    "so that PRs cannot remain open without a reviewer for more than 24 hours"
-                ),
-                owner_hint="tech lead",
-                urgency="short_term",
-            ),
-            ImprovementTask(
-                action=(
-                    "Run a weekly ownership audit: any task older than 3 days "
-                    "without an owner is escalated automatically"
-                ),
-                owner_hint="engineering manager",
-                urgency="ongoing",
-            ),
-        ],
+        interpretation=interpretation,
+        suggested_improvements=improvements,
     )
 
 

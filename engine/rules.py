@@ -58,6 +58,11 @@ def detect_orphan_work(payload: dict) -> PatternResult | None:
     matched_ids: list[str] = []
     signals: list[str] = []
 
+    ctx_tasks_no_owner: list[str] = []
+    ctx_services_no_owner_team: list[str] = []
+    ctx_tasks_churning: list[str] = []
+    ctx_prs_no_reviewer: list[str] = []
+
     for task in tasks:
         if not _active(task):
             continue
@@ -65,6 +70,7 @@ def detect_orphan_work(payload: dict) -> PatternResult | None:
 
         if not task.get("owner") and not task.get("team"):
             matched_ids.append(tid)
+            ctx_tasks_no_owner.append(tid)
             signals.append(f"Task {_label(task, tid)} has no owner and no team")
 
         svc_id = task.get("service")
@@ -73,6 +79,8 @@ def detect_orphan_work(payload: dict) -> PatternResult | None:
             if svc and not svc.get("owner_team"):
                 if tid not in matched_ids:
                     matched_ids.append(tid)
+                if svc_id not in ctx_services_no_owner_team:
+                    ctx_services_no_owner_team.append(svc_id)
                 signals.append(
                     f"Task {tid} is linked to service '{svc_id}' which has no owner team"
                 )
@@ -84,6 +92,7 @@ def detect_orphan_work(payload: dict) -> PatternResult | None:
         if len(ownership_events) >= OWNERSHIP_CHANGE_THRESHOLD:
             if tid not in matched_ids:
                 matched_ids.append(tid)
+            ctx_tasks_churning.append(tid)
             signals.append(
                 f"Task {tid} has {len(ownership_events)} ownership/team changes — "
                 "responsibility is not settling"
@@ -93,6 +102,7 @@ def detect_orphan_work(payload: dict) -> PatternResult | None:
         if pr.get("status") == "open" and not pr.get("reviewers"):
             pid = pr["id"]
             matched_ids.append(pid)
+            ctx_prs_no_reviewer.append(pid)
             signals.append(
                 f"PR {pid} '{pr.get('title', '')}' is open with no reviewers assigned"
             )
@@ -105,6 +115,12 @@ def detect_orphan_work(payload: dict) -> PatternResult | None:
         matched_ids=list(dict.fromkeys(matched_ids)),
         signals=signals,
         severity="high",
+        context={
+            "tasks_no_owner": ctx_tasks_no_owner,
+            "services_no_owner_team": ctx_services_no_owner_team,
+            "tasks_churning": ctx_tasks_churning,
+            "prs_no_reviewer": ctx_prs_no_reviewer,
+        },
     )
 
 

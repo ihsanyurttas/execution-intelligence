@@ -75,6 +75,7 @@ class PatternResult:
     matched_ids: list[str]  # task/PR ids that triggered this pattern
     signals: list[str]      # human-readable observations from the input
     severity: str = "medium"  # high | medium | low
+    context: dict = field(default_factory=dict)  # structured data for interpreter
 
 
 @dataclass
