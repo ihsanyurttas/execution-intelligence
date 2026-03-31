@@ -1,39 +1,22 @@
-# Session Log
+# Session Log — Decisions and Intent
 
-## 2026-03-28 — Session 1
+## 2026-03-28
 
-**Work done:**
-- Created CLAUDE.md (commands, architecture, payload shape, thresholds)
-- Created `docs/test_coverage_matrix.md` with gap analysis
-- Added 3 missing scenario JSON files: `priority_translation_failure_strong`, `untracked_work_dies_strong`, `circulating_work_strong`
-- Added Flask UI (`app.py`, `templates/index.html`) with dark theme, scenario loader, JSON editor, findings panel
-- Created Dockerfile and Kubernetes manifests (`k8s/namespace.yaml`, `k8s/deployment.yaml`, `k8s/service.yaml`)
-- Deployed to Docker Desktop Kubernetes, namespace `exec-intel`, NodePort 30080
+**Decision: context dict on PatternResult**
+Added `context: dict` to `PatternResult` so rules can pass structured entity data (task IDs, service IDs) to interpreters without the interpreter re-running detection or parsing signal strings.
+Tradeoff accepted: keys are untyped strings. Risk: silent empty list if key missing. Mitigation: document keys in project-context.md, use `.get("key", [])` defensively.
 
-**Commits:** e6e81a5, ffd705e
+**Decision: severity is engine-level, not UI-derived**
+Previous UI derived urgency from improvement urgency list. Problem: all patterns showed HIGH because all had at least one `immediate` improvement. Fix: each rule emits `severity` on `PatternResult`, interpreter passes it to `Finding`, UI reads `f.severity` directly.
+Pattern → severity mapping: orphan_work=high, undefined_outcome=high, untracked_work_dies=high, priority_translation_failure=medium, circulating_work=low.
 
----
+**Decision: remove "missing priority" from priority_translation_failure**
+A single task with `null` priority is a data quality gap, not a systemic pattern. The pattern is meaningful only when there is a conflict (urgency label + low priority) or spread (>= 3 distinct priorities in one service).
 
-## 2026-03-28 — Session 2
+**Decision: tighten circulating_work age signal**
+`age >= 14 AND any history` was too broad — a 15-day-old task with 1 status change and 1 owner change is normal. Changed to `age >= 14 AND >= 2 status changes`.
 
-**Work done:**
-- Restructured UI finding cards: evidence → interpretation → improvements ([ ] checklist) → my concern → why it matters
-- Added evaluation summary panel (scenario name, input counts, detected patterns)
-- Severity badge uses `f.severity` directly (not derived from improvements)
-- Added `false_positive_guard` scenario + 4 integration tests
-- Fixed `priority_translation_failure`: removed "missing priority" signal (data quality, not pattern)
-- Fixed `circulating_work`: tightened age-based signal to require >= 2 status changes
-- Added `severity` field to `PatternResult` and `Finding` (engine-level, per pattern)
-- Rewrote `orphan_work` interpreter: evidence-driven interpretation + entity-specific actions via `context` dict
+## 2026-03-31
 
-**Commits:** 8517920, 0c39295, dafa7f3, e98a6a0
-
----
-
-## 2026-03-31 — Session 3 (this session)
-
-**Work done:**
-- Created `.claude/` persistent session files
-- Updated CLAUDE.md
-
-**State at end:** 44 tests passing, UI live at localhost:30080, orphan_work interpreter fully upgraded, 4 remaining interpreters still generic.
+**Decision: session files should be executable, not descriptive**
+First version of `.claude/` files was summary-heavy. Rewritten to be operational: exact file paths, exact functions, exact commands, exact code to copy. A session file that doesn't answer "what file do I open?" is useless.

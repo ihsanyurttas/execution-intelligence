@@ -1,38 +1,34 @@
 # Session Summary
 
-## What Exists (as of 2026-03-31)
+## Current focus
+Interpreter redesign — `orphan_work` done, `undefined_outcome` is next.
 
-### Engine (complete, production-quality)
-- 5 pattern detectors in `engine/rules.py` with explicit thresholds
-- `PatternResult` now carries `severity` (high/medium/low) and `context` (structured entity dict)
-- `Finding` carries `severity` directly from the engine — not derived in UI
-- `orphan_work` interpreter fully rewritten: entity-specific interpretation and per-entity improvement actions
+## Last change
+`engine/interpreter.py` — `_orphan_work()` rewritten to use `context` dict.
+`engine/rules.py` — `detect_orphan_work()` now populates `context` with 4 entity lists.
+`engine/models.py` — `PatternResult` has `context: dict`, `Finding` has `severity: str`.
 
-### Interpreters (partially upgraded)
-- `orphan_work` — fully evidence-driven, generates one ImprovementTask per entity (T-801, checkout-service)
-- `undefined_outcome`, `untracked_work_dies`, `priority_translation_failure`, `circulating_work` — still generic text
-- These 4 need the same treatment as `orphan_work`: context populated in rules, entity-specific text in interpreter
+## What is broken right now
 
-### Tests (44 passing)
-- `tests/test_rules.py` — unit tests per detector (26 tests)
-- `tests/test_scenarios.py` — 4 scenario integration test classes (18 tests)
-- `docs/test_coverage_matrix.md` — coverage matrix with gap analysis
-- All 5 scenario JSON files exist (including `false_positive_guard`)
+### 4 interpreters still produce generic output
+All in `engine/interpreter.py`. Each function listed below:
 
-### UI (deployed, functional)
-- Dark theme single-page app at `http://localhost:30080`
-- Evaluation summary panel (scenario, input counts, detected patterns)
-- Finding cards: evidence (collapse at 3) → interpretation (2 sentences) → improvements ([ ] checklist) → my concern (editable) → why it matters (collapsible)
-- Severity badge reads directly from `f.severity`
+| Function | Line | Problem |
+|----------|------|---------|
+| `_undefined_outcome` | ~80 | Generic interpretation. Actions say "add done_criteria to every active task" — no task IDs. |
+| `_priority_translation_failure` | ~123 | Generic. No entity IDs in actions. |
+| `_untracked_work_dies` | ~169 | Generic. Actions say "add all active tasks to report" — no IDs. |
+| `_circulating_work` | ~212 | Generic. Actions say "for each circulating task" — no IDs. |
 
-### Infrastructure (running)
-- Docker image `exec-intel:latest` built and live
-- Kubernetes: namespace `exec-intel`, deployment + NodePort service on port 30080
-- Pod running, 0 restarts
+None of the corresponding rules (`detect_undefined_outcome`, etc.) populate `context`. They all return `PatternResult(..., context={})`.
 
-## What Is NOT Finished
-1. `undefined_outcome`, `untracked_work_dies`, `priority_translation_failure`, `circulating_work` interpreters still output generic text and generic actions — they need entity-specific rewrites using `context`
-2. `detect_undefined_outcome`, `detect_untracked_work_dies`, etc. do NOT yet populate `context` — they return empty `{}`
-3. No dominance/suppression rule (e.g., suppress `circulating_work` when `orphan_work` fires on same task)
-4. `ManualConnector._validate()` only checks that tasks is a list — no field-level validation
-5. Test coverage matrix shows `priority_translation_failure` and `circulating_work` still have no dedicated scenario integration test class
+### Validation gap
+`connectors/manual_connector.py` — `_validate()` only checks `tasks` is a list.
+A payload missing `id` on a task crashes in `engine/rules.py` with a bare `KeyError`.
+
+## What works
+- Detection: all 5 rules correct, 44 tests passing
+- Severity: engine-level, correct per pattern
+- UI: evaluation summary panel, finding cards with [ ] checklist, severity badge, "my concern" textarea
+- `orphan_work`: interpretation and actions are entity-specific (references T-801, checkout-service by name)
+- Kubernetes: pod running, 0 restarts, UI live at localhost:30080
