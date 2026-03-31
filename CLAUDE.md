@@ -2,6 +2,18 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Session Workflow
+
+At the **start** of every session: read `.claude/project-context.md`, `.claude/session-summary.md`, `.claude/next-steps.md`.
+At the **end** of every session: update `.claude/session-summary.md` and `.claude/session-log.md` with what changed.
+
+## Coding Rules
+
+- Follow existing patterns — dict-based rules, no ORM, no framework in engine layer
+- `context` dict in `PatternResult` is the bridge from rules → interpreter. Populate it in rules, consume it in interpreter. Do not parse signal strings.
+- All output is deterministic. No LLM calls anywhere in the engine.
+- Always use `.venv` — never `pip install` globally.
+
 ## Commands
 
 ```bash
