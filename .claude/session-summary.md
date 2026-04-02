@@ -4,9 +4,14 @@
 Interpreter redesign — `orphan_work` done, `undefined_outcome` is next.
 
 ## Last change
-`engine/interpreter.py` — `_orphan_work()` rewritten to use `context` dict.
-`engine/rules.py` — `detect_orphan_work()` now populates `context` with 4 entity lists.
-`engine/models.py` — `PatternResult` has `context: dict`, `Finding` has `severity: str`.
+No code changes. Partial UI test via Playwright MCP.
+
+**Playwright test results (partial — browser crashed after first click):**
+- Page loads at `localhost:30080` ✓
+- All 8 scenario buttons visible ✓
+- Blank payload renders in textarea ✓
+- `favicon.ico` 404 — harmless
+- Flow test (click scenario → Analyze → inspect results) **incomplete** — browser context closed after clicking `orphan work ★`
 
 ## What is broken right now
 
@@ -25,6 +30,12 @@ None of the corresponding rules (`detect_undefined_outcome`, etc.) populate `con
 ### Validation gap
 `connectors/manual_connector.py` — `_validate()` only checks `tasks` is a list.
 A payload missing `id` on a task crashes in `engine/rules.py` with a bare `KeyError`.
+
+### Playwright browser crashes mid-session
+Browser context closes after the first tool-call gap. Keep Playwright calls in rapid sequence with no tool-schema fetches between them.
+
+### UI flow test incomplete
+Scenario → Analyze → results panel not yet validated for any of the 8 scenarios.
 
 ## What works
 - Detection: all 5 rules correct, 44 tests passing
