@@ -1,121 +1,136 @@
 # Execution Intelligence Engine
 
-A source-agnostic engine that detects execution failure patterns in engineering teams and produces structured findings with actionable improvement tasks.
+A system that diagnoses how engineering work actually executes — and identifies the hidden patterns that drive missed deadlines, unclear ownership, and wasted effort.
 
-## What this is
+---
 
-Engineering teams observe symptoms — blocked work, missed deadlines, unclear priorities. This engine looks for the underlying patterns that generate those symptoms and recommends the highest-impact corrective actions.
+## The Problem
 
-This is a deterministic prototype. No LLM, no database, no web server.
+Most engineering problems are not visible in metrics.
 
-## Architecture
+Teams see symptoms:
+- work gets stuck
+- priorities shift constantly
+- ownership is unclear
+- deadlines slip
 
-```
-connector → canonical payload dict
-    ↓
-detector  → list[PatternResult]     (runs all rules)
-    ↓
-interpreter → list[Finding]          (one Finding per PatternResult)
-    ↓
-output    → final JSON dict
-```
+But these are outcomes — not causes.
 
-**Key files:**
+The real issues live in how work is executed:
+- ownership gaps
+- undefined outcomes
+- priority translation failures
+- coordination breakdowns
 
-| File | Purpose |
-|---|---|
-| `engine/contracts.py` | Constants: allowed source categories, modes, statuses |
-| `engine/models.py` | Dataclasses for all domain entities and engine output types |
-| `engine/rules.py` | One `detect_*` function per pattern + `PATTERN_DETECTORS` list |
-| `engine/detector.py` | Runs all detectors, returns non-empty results |
-| `engine/interpreter.py` | Converts PatternResult → Finding (fallback, no LLM) |
-| `engine/output.py` | Assembles final JSON-serializable output |
-| `connectors/scenario_connector.py` | Loads a scenario JSON file |
-| `connectors/manual_connector.py` | Accepts a Python dict, does light validation |
+These patterns are rarely made explicit.
 
-## Canonical payload shape
+---
+
+## The Idea
+
+Execution Intelligence Engine analyzes engineering signals (tasks, pull requests, services) and identifies these underlying execution patterns.
+
+Instead of reporting status, it answers:
+
+> Why is this work not progressing?
+
+---
+
+## What It Does
+
+**Input:**
+- Tasks
+- Pull requests
+- Services
+
+**Output:**
+- Detected execution patterns
+- Evidence for each pattern
+- Interpretation of what it means
+- Suggested improvement actions
+
+---
+
+## Example Output
 
 ```json
 {
-  "source": { "category": "work_tracking", "mode": "scenario", "product": "manual" },
-  "tasks": [
-    {
-      "id": "T-001",
-      "title": "...",
-      "status": "open",
-      "priority": "high",
-      "owner": null,
-      "team": null,
-      "service": "payments",
-      "done_criteria": null,
-      "success_metric": null,
-      "age_days": 12,
-      "in_report": true,
-      "labels": ["backend"],
-      "history": [
-        { "event": "owner_change", "from": "alice", "to": null, "days_ago": 5 }
-      ]
-    }
+  "pattern": "orphan_work",
+  "evidence": [
+    "Task T-001 has no owner",
+    "Service payments has no owner_team"
   ],
-  "pull_requests": [
-    {
-      "id": "PR-001", "title": "...", "author": "bob",
-      "reviewers": [], "status": "open",
-      "linked_task_id": "T-001", "age_days": 3
-    }
-  ],
-  "services": [
-    { "id": "payments", "name": "Payment Service", "owner_team": null, "criticality": "p0" }
+  "interpretation": "Work exists without clear ownership, leading to stalled execution",
+  "suggested_improvements": [
+    "Assign a single accountable owner per task",
+    "Define ownership for each service"
   ]
 }
 ```
 
-## Patterns detected (v1)
+---
 
-| Pattern | What it detects |
-|---|---|
-| `orphan_work` | Tasks with no owner/team, services with no owner_team, PRs with no reviewers, frequent ownership changes |
-| `undefined_outcome` | Active tasks missing `done_criteria` or `success_metric` |
-| `priority_translation_failure` | No priority set, urgency/priority mismatch, wide priority spread within a service |
-| `untracked_work_dies` | Tasks excluded from reports, stale tasks with no service or metric |
-| `circulating_work` | Repeated status changes without completion, status bouncing, old tasks still moving |
+## Architecture
 
-## How to run
-
-```bash
-# Setup (first time)
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-
-# Run against a scenario
-python main.py --scenario scenarios/orphan_work_strong.json
-python main.py --scenario scenarios/undefined_outcome_strong.json
-python main.py --scenario scenarios/mixed_case.json
-
-# Run against your own input file
-python main.py --input path/to/your_payload.json
-
-# Run tests
-python -m pytest tests/ -v
+```
+connector → canonical payload
+      ↓
+detector → patterns
+      ↓
+interpreter → findings
+      ↓
+output → structured JSON
 ```
 
-## Adding a new pattern
+This is intentionally simple:
+- no database
+- deterministic logic
+- easy to extend
 
-1. Write a `detect_<pattern_name>(payload: dict) -> PatternResult | None` function in `engine/rules.py`
-2. Append it to `PATTERN_DETECTORS`
-3. Add a corresponding `_<pattern_name>` function in `engine/interpreter.py`
-4. Register it in the `interpreters` dict inside `interpret()`
-5. Add a scenario file and tests
+---
 
-No other changes required.
+## Example Patterns
 
-## Out of scope
+- orphan_work  
+- undefined_outcome  
+- priority_translation_failure  
+- untracked_work_dies  
+- circulating_work  
 
-- No UI
-- No database
-- No real Jira/GitHub integrations
-- No LLM integration
-- No plugin system
-- No web server
-- No generic rule engine or DSL
+These are examples of execution failure patterns.
+
+The system is designed to be extensible — new patterns can be added as additional failure modes are identified.
+
+---
+
+## Why This Matters
+
+Infrastructure and metrics show *what* is happening.
+
+This system explains *why*.
+
+It shifts focus from:
+- system health → execution health
+- resource tuning → coordination and ownership
+
+---
+
+## How to Run
+
+```bash
+python main.py --scenario scenarios/mixed_case.json
+```
+
+---
+
+## Status
+
+This is an early prototype focused on:
+- deterministic pattern detection
+- structured interpretation
+- reproducible scenarios
+
+Future directions:
+- real connectors (Jira, GitHub)
+- LLM-assisted interpretation
+- prioritization and scoring
