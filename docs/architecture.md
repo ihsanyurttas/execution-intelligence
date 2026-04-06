@@ -1,51 +1,12 @@
-# CLAUDE.md
+# Architecture
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## Pipeline
 
-## Session Workflow
-
-At the **start** of every session: read `.claude/project-context.md`, `.claude/session-summary.md`, `.claude/next-steps.md`.
-At the **end** of every session: update `.claude/session-summary.md` and `.claude/session-log.md` with what changed.
-
-## Coding Rules
-
-- Follow existing patterns — dict-based rules, no ORM, no framework in engine layer
-- `context` dict in `PatternResult` is the bridge from rules → interpreter. Populate it in rules, consume it in interpreter. Do not parse signal strings.
-- All output is deterministic. No LLM calls anywhere in the engine.
-- Always use `.venv` — never `pip install` globally.
-
-## Commands
-
-```bash
-# Setup
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-
-# Run all tests
-python -m pytest tests/ -v
-
-# Run a single test file
-python -m pytest tests/test_rules.py -v
-
-# Run a single test by name
-python -m pytest tests/test_rules.py::test_orphan_work_no_owner -v
-
-# Run against a built-in scenario
-python main.py --scenario scenarios/orphan_work_strong.json
-
-# Run against custom input
-python main.py --input path/to/payload.json
-```
-
-Always use `.venv` for pip — never install globally.
-
-## Architecture
-
-**Pipeline (left to right):**
 ```
 Connector → canonical dict → Detector → [PatternResult] → Interpreter → [Finding] → Output → JSON
 ```
+
+## Components
 
 - `connectors/` — input adapters. `ScenarioConnector` loads JSON files; `ManualConnector` accepts a dict. Both must implement `source_descriptor()` and `load()` from `base.py`.
 - `engine/rules.py` — 5 detection functions. Each receives the canonical payload dict and returns a `PatternResult` or `None`. The `PATTERN_DETECTORS` list is the registry — append to extend.
@@ -55,7 +16,7 @@ Connector → canonical dict → Detector → [PatternResult] → Interpreter �
 - `engine/models.py` — all dataclasses (`Task`, `PullRequest`, `Service`, `PatternResult`, `Finding`, `ImprovementTask`, etc.).
 - `engine/contracts.py` — allowed values for categories, modes, statuses, priorities (used for validation).
 
-## Extending: Adding a New Pattern
+## Adding a New Pattern
 
 1. Add a detector function in `engine/rules.py` and append it to `PATTERN_DETECTORS`.
 2. Add a corresponding interpreter in `engine/interpreter.py` and register it in the interpreter dispatch map.
@@ -82,7 +43,7 @@ Connector → canonical dict → Detector → [PatternResult] → Interpreter �
 }
 ```
 
-## Detection Thresholds (engine/rules.py)
+## Detection Thresholds
 
 | Constant | Value | Used in |
 |---|---|---|
