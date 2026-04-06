@@ -149,10 +149,7 @@ python main.py --scenario scenarios/mixed_case.json
 
 ## Status
 
-This is an early prototype focused on:
-- deterministic pattern detection
-- structured interpretation
-- reproducible scenarios
+This is an initial prototype focused on deterministic pattern detection.
 
 Future directions:
 - real connectors (Jira, GitHub)
