@@ -1,0 +1,48 @@
+{
+"source": {
+"category": "work_tracking",
+"mode": "user_provided",
+"product": "manual"
+},
+"tasks": [
+{
+"id": "T-001",
+"title": "Long-open task with repeated assignee changes and no progress",
+"status": "open",
+"priority": null,
+"owner": "engineering_manager_4",
+"team": null,
+"service": null,
+"done_criteria": null,
+"success_metric": null,
+"age_days": 300,
+"in_report": false,
+"labels": [
+"stalled",
+"ownership"
+],
+"history": [
+{
+"event": "owner_change",
+"from": "engineering_manager_1",
+"to": "engineering_manager_2",
+"days_ago": 240
+},
+{
+"event": "owner_change",
+"from": "engineering_manager_2",
+"to": "engineering_manager_3",
+"days_ago": 180
+},
+{
+"event": "owner_change",
+"from": "engineering_manager_3",
+"to": "engineering_manager_4",
+"days_ago": 120
+}
+]
+}
+],
+"pull_requests": [],
+"services": []
+}

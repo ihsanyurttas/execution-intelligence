@@ -113,12 +113,16 @@ Just copy the prompt below, paste it into your AI chat, and describe your situat
 ```text
 You are generating a JSON payload for an engineering execution analysis system.
 
-Your task is to convert a natural language description of an engineering team situation into valid JSON.
+Your task is to convert a natural language description into valid, clean, and directly runnable JSON.
 
 STRICT REQUIREMENTS:
-- Output ONLY valid JSON (no explanations)
-- Ensure the JSON is complete and directly usable
-- Keep it small but meaningful (3–6 tasks max)
+- Output ONLY valid JSON
+- Do NOT include explanations, comments, or markdown
+- Use ONLY standard ASCII double quotes (") — never use smart quotes
+- Ensure the JSON is fully parseable by Python's json module
+- Do NOT include trailing commas
+- Do NOT include extra text before or after JSON
+- Keep it small and realistic
 
 TOP-LEVEL STRUCTURE:
 {
@@ -136,7 +140,8 @@ RULES:
 - product = "manual"
 
 2. tasks:
-- id (T-001, ...)
+Each task MUST include:
+- id (T-001, T-002, ...)
 - title
 - status (open | in_progress | done | blocked)
 - priority (critical | high | medium | low | null)
@@ -148,10 +153,10 @@ RULES:
 - age_days (integer)
 - in_report (true/false)
 - labels (array)
-- history (array)
+- history (array of objects)
 
 3. pull_requests:
-- id
+- id (PR-001, ...)
 - title
 - author
 - reviewers (array)
@@ -178,10 +183,19 @@ DEFAULTS (if missing):
 - priority = null
 - criticality = "p1"
 
-Include at least:
-- one ownership issue
-- one unclear outcome
-- one coordination or priority issue
+SCENARIO MODELING RULE (CRITICAL):
+- Model the situation as described, not as an idealized or expanded version of it
+- Do NOT invent extra tasks, pull requests, or services unless they are clearly implied
+- Prefer fewer, more realistic entities over artificially complete scenarios
+- If the situation mainly describes a single problematic task, represent that task accurately instead of generating synthetic follow-up work
+
+FINAL VALIDATION (VERY IMPORTANT):
+Before returning the response:
+- ensure all quotes are standard ASCII double quotes (")
+- ensure there are no smart quotes or special characters
+- ensure there are no trailing commas
+- ensure the JSON is syntactically valid and complete
+- if invalid, regenerate until valid
 
 ---
 
@@ -189,14 +203,61 @@ Now convert this situation:
 
 [PASTE YOUR TEAM SITUATION HERE]
 ```
+Example Situation : "We have a task open for 10 months with 4 ownership changes and no progress."
 
 ---
+
 
 ### Then run:
 
 ```bash
 python main.py --input path/to/generated.json
 ```
+
+---
+
+### Troubleshooting JSON Issues
+
+If your JSON fails to parse, it is usually due to quote characters introduced by editors or AI tools.
+
+#### Validate JSON
+
+```bash
+python -m json.tool path/to/generated.json
+```
+
+If this prints formatted JSON, your file is valid.
+
+---
+
+#### Fix smart quotes (common issue)
+
+Some tools replace standard quotes (") with smart quotes (“ ”), which breaks JSON.
+
+##### macOS
+
+```bash
+sed -i '' 's/“/"/g; s/”/"/g' path/to/generated.json
+```
+
+##### Linux
+
+```bash
+sed -i 's/“/"/g; s/”/"/g' path/to/generated.json
+```
+
+---
+
+#### Tip
+
+If you see errors like:
+
+```
+Expecting property name enclosed in double quotes
+```
+
+It almost always means your file contains invalid quote characters.
+
 
 ---
 
