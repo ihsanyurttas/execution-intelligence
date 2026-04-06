@@ -52,18 +52,42 @@ Instead of reporting status, it answers:
 ---
 
 ## Example Output
-
 ```json
 {
-  "pattern": "orphan_work",
-  "evidence": [
-    "Task T-001 has no owner",
-    "Service payments has no owner_team"
-  ],
-  "interpretation": "Work exists without clear ownership, leading to stalled execution",
-  "suggested_improvements": [
-    "Assign a single accountable owner per task",
-    "Define ownership for each service"
+  "findings": [
+    {
+      "pattern": "orphan_work",
+      "severity": "high",
+      "issue": "Multiple work items have no clear owner, team, or accountable service.",
+      "evidence": [
+        "Task T-301 has no owner and no team",
+        "Task T-303 has no owner and no team",
+        "Task T-305 has no owner and no team",
+        "Service 'integrations' has no owner_team",
+        "Service 'catalog' has no owner_team",
+        "PR-301 is open with no reviewers assigned"
+      ],
+      "interpretation": "Work exists without clear ownership at both task and service level. Responsibility shifts without settling, and review processes are blocked.",
+      "suggested_improvements": [
+        "Assign a single accountable owner per task",
+        "Define ownership for each service",
+        "Ensure every PR has at least one reviewer"
+      ]
+    },
+    {
+      "pattern": "undefined_outcome",
+      "severity": "high",
+      "issue": "Active tasks are missing done criteria and success metrics.",
+      "evidence": [
+        "Tasks lack done_criteria",
+        "Tasks lack success_metric"
+      ],
+      "interpretation": "Work progresses without a clear definition of success, making prioritization and validation unreliable.",
+      "suggested_improvements": [
+        "Define done criteria before starting work",
+        "Attach measurable success metrics to each task"
+      ]
+    }
   ]
 }
 ```
