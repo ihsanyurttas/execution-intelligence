@@ -1,0 +1,42 @@
+{
+  "sources": [
+    {
+      "id": "src-1",
+      "category": "work_tracking",
+      "product": "jira",
+      "mode": "scenario"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T-902",
+      "title": "Improve logging for payment service",
+      "status": "in_progress",
+      "status_category": "active",
+      "priority": "medium",
+      "owner": "alice",
+      "team": "payments",
+      "service": "payment-service",
+      "done_criteria": "All critical flows logged",
+      "success_metric": "log coverage increased",
+      "age_days": 6,
+      "days_since_last_status_change": 1,
+      "status_changes": 2,
+      "ownership_changes": 0,
+      "reversion_count": 0,
+      "in_report": true,
+      "history": [
+        { "event": "status_change", "from": "todo", "to": "in_progress" }
+      ]
+    }
+  ],
+  "pull_requests": [],
+  "services": [
+    {
+      "id": "payment-service",
+      "name": "Payment Service",
+      "owner_team": "payments",
+      "criticality": "p1"
+    }
+  ]
+}

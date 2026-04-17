@@ -9,38 +9,39 @@
   ],
   "tasks": [
     {
-      "id": "T-901",
-      "title": "Fix intermittent checkout failure",
+      "id": "T-903",
+      "title": "Stabilize reporting pipeline",
       "status": "in_progress",
       "status_category": "active",
       "priority": "high",
-      "owner": "alice",
-      "team": "backend",
-      "service": "checkout-service",
-      "done_criteria": "Checkout succeeds for 99% of requests",
-      "success_metric": "failure_rate < 1%",
-      "age_days": 16,
-      "days_since_last_status_change": 4,
-      "status_changes": 5,
-      "ownership_changes": 2,
+      "owner": null,
+      "team": null,
+      "service": "reporting-service",
+      "done_criteria": "Pipeline stable under load",
+      "success_metric": "error rate < 2%",
+      "age_days": 18,
+      "days_since_last_status_change": 5,
+      "status_changes": 4,
+      "ownership_changes": 3,
       "reversion_count": 2,
-      "in_report": true,
+      "in_report": false,
       "history": [
         { "event": "status_change", "from": "todo", "to": "in_progress" },
         { "event": "status_change", "from": "in_progress", "to": "review" },
         { "event": "status_change", "from": "review", "to": "in_progress" },
         { "event": "owner_change", "from": "alice", "to": "bob" },
-        { "event": "owner_change", "from": "bob", "to": "alice" }
+        { "event": "owner_change", "from": "bob", "to": "charlie" },
+        { "event": "owner_change", "from": "charlie", "to": null }
       ]
     }
   ],
   "pull_requests": [],
   "services": [
     {
-      "id": "checkout-service",
-      "name": "Checkout Service",
-      "owner_team": "backend",
-      "criticality": "p0"
+      "id": "reporting-service",
+      "name": "Reporting Service",
+      "owner_team": null,
+      "criticality": "p1"
     }
   ]
 }

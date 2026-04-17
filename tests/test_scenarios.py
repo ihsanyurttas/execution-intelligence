@@ -134,5 +134,26 @@ class TestFalsePositiveGuard(unittest.TestCase):
         self.assertEqual(summary["service_count"], len(payload["services"]))
 
 
+class TestCirculatingWorkSuppression(unittest.TestCase):
+    """Suppression layer: circulating_work must not fire when orphan_work is HIGH on same entity."""
+
+    def test_strong_orphan_present_circulating_suppressed(self):
+        data = run_scenario("circulating_work_strong.json")
+        patterns = [r.pattern for r in data["results"]]
+        self.assertIn("orphan_work", patterns)
+        self.assertNotIn("circulating_work", patterns)
+
+    def test_overlap_orphan_and_untracked_present_circulating_suppressed(self):
+        data = run_scenario("circulating_work_overlap.json")
+        patterns = [r.pattern for r in data["results"]]
+        self.assertIn("orphan_work", patterns)
+        self.assertIn("untracked_work_dies", patterns)
+        self.assertNotIn("circulating_work", patterns)
+
+    def test_weak_no_patterns_detected(self):
+        data = run_scenario("circulating_work_weak.json")
+        self.assertEqual(data["results"], [])
+
+
 if __name__ == "__main__":
     unittest.main()
